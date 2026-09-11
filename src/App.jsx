@@ -8,6 +8,7 @@ const GOOGLE_FORM_URL =
 
 function App() {
   const [page, setPage] = useState(0);
+  const [direction, setDirection] = useState(1);
   const googleFormRef = useRef(null);
 
   const [formData, setFormData] = useState({
@@ -29,14 +30,19 @@ function App() {
     }));
   };
 
+  const navigateTo = (nextPage) => {
+    setDirection(nextPage >= page ? 1 : -1);
+    setPage(nextPage);
+  };
+
   const submitToGoogleForm = () => {
     console.debug("Submitting Google Form:", formData);
     googleFormRef.current.submit();
-    setPage(8);
+    navigateTo(8);
   };
 
   return (
-    <div className="app">
+    <div className="app" style={{ overflowX: "hidden" }}>
       <form
         ref={googleFormRef}
         action={GOOGLE_FORM_URL}
@@ -88,13 +94,13 @@ function App() {
         title="Google Forms submission"
         style={{ display: "none" }}
       />
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="wait" custom={direction}>
 
         {/* LANDING PAGE */}
         {page === 0 && (
           <LandingPage
             key="landing"
-            onStart={() => setPage(1)}
+            onStart={() => navigateTo(1)}
           />
         )}
 
@@ -104,8 +110,8 @@ function App() {
             key="question-one"
             data={formData}
             updateData={updateData}
-            onNext={() => setPage(2)}
-            onBack={() => setPage(0)}
+            onNext={() => navigateTo(2)}
+            onBack={() => navigateTo(0)}
           />
         )}
 
@@ -115,8 +121,8 @@ function App() {
             key="question-two"
             data={formData}
             updateData={updateData}
-            onNext={() => setPage(3)}
-            onBack={() => setPage(1)}
+            onNext={() => navigateTo(3)}
+            onBack={() => navigateTo(1)}
           />
         )}
 
@@ -126,8 +132,8 @@ function App() {
             key="question-three"
             data={formData}
             updateData={updateData}
-            onNext={() => setPage(4)}
-            onBack={() => setPage(2)}
+            onNext={() => navigateTo(4)}
+            onBack={() => navigateTo(2)}
           />
         )}
         
@@ -137,8 +143,8 @@ function App() {
     key="question-four"
     data={formData}
     updateData={updateData}
-    onNext={() => setPage(5)}
-    onBack={() => setPage(3)}
+    onNext={() => navigateTo(5)}
+    onBack={() => navigateTo(3)}
   />
 )}
 {page === 5 && (
@@ -146,8 +152,8 @@ function App() {
     key="question-five"
     data={formData}
     updateData={updateData}
-    onNext={() => setPage(6)}
-    onBack={() => setPage(4)}
+    onNext={() => navigateTo(6)}
+    onBack={() => navigateTo(4)}
   />
 )}
 {page === 6 && (
@@ -155,8 +161,8 @@ function App() {
     key="question-six"
     data={formData}
     updateData={updateData}
-    onNext={() => setPage(7)}
-    onBack={() => setPage(5)}
+    onNext={() => navigateTo(7)}
+    onBack={() => navigateTo(5)}
   />
 )}
 {page === 7 && (
@@ -165,14 +171,14 @@ function App() {
     data={formData}
     updateData={updateData}
     onNext={submitToGoogleForm}
-    onBack={() => setPage(6)}
+    onBack={() => navigateTo(6)}
   />
 )}
 {page === 8 && (
   <FinalPage
     key="final"
     data={formData}
-    onRestart={() => setPage(0)}
+    onRestart={() => navigateTo(0)}
   />
 )}
 
@@ -1749,6 +1755,29 @@ function FinalPage({ data, onRestart }) {
    SHARED QUESTION LAYOUT
 ========================================================= */
 
+const pageTransitionVariants = {
+  initial: (direction) => ({
+    opacity: 0,
+    x: direction * 30,
+  }),
+  animate: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.42,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  },
+  exit: (direction) => ({
+    opacity: 0,
+    x: direction * -30,
+    transition: {
+      duration: 0.3,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  }),
+};
+
 function QuestionLayout({
   children,
   step,
@@ -1758,22 +1787,10 @@ function QuestionLayout({
   return (
     <motion.main
       className="question-page"
-      initial={{
-        opacity: 0,
-        x: 80,
-      }}
-      animate={{
-        opacity: 1,
-        x: 0,
-      }}
-      exit={{
-        opacity: 0,
-        x: -80,
-      }}
-      transition={{
-        duration: 0.5,
-        ease: "easeOut",
-      }}
+      variants={pageTransitionVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
     >
 
       <header className="question-header">
