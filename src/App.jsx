@@ -88,6 +88,15 @@ function App() {
         ))}
         <input name="entry.1020062477" value={formData.phone} readOnly />
         <input name="entry.841494470" value={formData.email} readOnly />
+        <input name="entry.392658492_sentinel" value="" readOnly />
+        <input name="entry.2041580082_sentinel" value="" readOnly />
+        <input name="entry.1472901316_sentinel" value="" readOnly />
+        <input name="entry.1200873607_sentinel" value="" readOnly />
+        <input name="entry.289437916_sentinel" value="" readOnly />
+        <input name="entry.901751509_sentinel" value="" readOnly />
+        <input name="fvv" value="1" readOnly />
+        <input name="pageHistory" value="0" readOnly />
+        <input name="submissionTimestamp" value="-1" readOnly />
       </form>
       <iframe
         name="google-form-hidden-frame"
