@@ -1,0 +1,772 @@
+/* =========================================================
+   ADMIN PANEL — BCA Tech Community (Light Theme)
+========================================================= */
+
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* =========================================================
+   LOGIN PAGE
+========================================================= */
+
+.admin-login {
+  min-height: 100vh;
+  background: #f0ede6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.admin-login-box {
+  width: min(420px, 92vw);
+  background: #ffffff;
+  border: 3px solid #111;
+  padding: 44px 36px;
+  box-shadow: 8px 8px 0 #111;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.admin-login-tag {
+  font-family: "DM Mono", monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  background: #111;
+  color: #c8ff00;
+  padding: 4px 10px;
+  width: fit-content;
+}
+
+.admin-login-box h1 {
+  font-size: 42px;
+  line-height: 0.88;
+  letter-spacing: -2.5px;
+  color: #111;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.admin-login-box h1 span {
+  display: inline-block;
+  background: #c8ff00;
+  padding: 2px 8px 5px;
+}
+
+.admin-login-box > p {
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+  color: #888;
+  margin-bottom: 4px;
+}
+
+.admin-login-box input {
+  width: 100%;
+  height: 50px;
+  border: 2px solid #ccc;
+  background: #fafafa;
+  padding: 12px 16px;
+  font-family: "DM Mono", monospace;
+  font-size: 13px;
+  color: #111;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.admin-login-box input:focus {
+  border-color: #111;
+  background: #fff;
+}
+
+.admin-login-box input.error {
+  border-color: #e53935;
+  background: #fff5f5;
+}
+
+.admin-login-error {
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+  color: #e53935;
+  font-weight: 700;
+}
+
+/* password wrapper */
+.pw-wrapper {
+  position: relative;
+  display: flex;
+}
+
+.pw-wrapper input {
+  flex: 1;
+  padding-right: 48px;
+}
+
+.pw-eye {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 48px;
+  background: transparent;
+  border: none;
+  border-left: 2px solid #ccc;
+  color: #888;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.pw-eye:hover {
+  color: #111;
+  background: #f0ede6;
+}
+
+.admin-login-box button[type="submit"] {
+  height: 50px;
+  border: 2px solid #111;
+  background: #111;
+  color: #c8ff00;
+  font-family: "DM Mono", monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: 5px 5px 0 #c8ff00;
+  transition: box-shadow 0.15s, transform 0.15s;
+  margin-top: 4px;
+}
+
+.admin-login-box button[type="submit"]:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 #c8ff00;
+}
+
+.admin-login-box button[type="submit"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.back-btn {
+  height: 44px;
+  border: 2px solid #ddd !important;
+  background: transparent !important;
+  color: #888 !important;
+  font-family: "DM Mono", monospace !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: border-color 0.15s, color 0.15s !important;
+}
+
+.back-btn:hover {
+  border-color: #111 !important;
+  color: #111 !important;
+}
+
+/* =========================================================
+   MAIN SHELL
+========================================================= */
+
+.admin-shell {
+  min-height: 100vh;
+  background: #f5f3ee;
+  font-family: "Space Grotesk", sans-serif;
+  color: #111;
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================================================
+   TOPBAR
+========================================================= */
+
+.admin-topbar {
+  height: 62px;
+  background: #ffffff;
+  border-bottom: 2px solid #e8e5de;
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: "DM Mono", monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #111;
+}
+
+.admin-badge {
+  background: #111;
+  color: #c8ff00;
+  padding: 3px 8px;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.admin-topbar-right {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-topbar-right button {
+  height: 34px;
+  padding: 0 14px;
+  font-family: "DM Mono", monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  border: 2px solid #ddd;
+  background: #fff;
+  color: #666;
+  transition: all 0.15s;
+}
+
+.admin-topbar-right button:hover {
+  border-color: #111;
+  color: #111;
+}
+
+.btn-export {
+  border-color: #111 !important;
+  background: #111 !important;
+  color: #c8ff00 !important;
+}
+
+.btn-export:hover {
+  background: #333 !important;
+}
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.admin-stats {
+  display: flex;
+  background: #fff;
+  border-bottom: 2px solid #e8e5de;
+}
+
+.stat-card {
+  flex: 1;
+  padding: 18px 24px;
+  border-right: 2px solid #e8e5de;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.stat-card:last-child {
+  border-right: none;
+}
+
+.stat-value {
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+  color: #111;
+  letter-spacing: -1.5px;
+}
+
+.stat-label {
+  font-family: "DM Mono", monospace;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #aaa;
+}
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.admin-search-bar {
+  padding: 14px 28px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #fff;
+  border-bottom: 2px solid #e8e5de;
+}
+
+.admin-search-bar input {
+  flex: 1;
+  height: 40px;
+  background: #f5f3ee;
+  border: 2px solid #e0ddd6;
+  padding: 0 14px;
+  color: #111;
+  font-family: "DM Mono", monospace;
+  font-size: 11px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.admin-search-bar input:focus {
+  border-color: #111;
+}
+
+.admin-search-bar input::placeholder {
+  color: #bbb;
+}
+
+.filter-select {
+  height: 40px;
+  background: #f5f3ee;
+  border: 2px solid #e0ddd6;
+  padding: 0 12px;
+  color: #111;
+  font-family: "DM Mono", monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  min-width: 110px;
+}
+
+.filter-select:focus {
+  border-color: #111;
+}
+
+.filter-select:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-clear {
+  height: 40px;
+  padding: 0 14px;
+  background: #111;
+  border: none;
+  color: #fff;
+  font-family: "DM Mono", monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.btn-clear:hover {
+  background: #e53935;
+}
+
+.search-count {
+  font-family: "DM Mono", monospace;
+  font-size: 9px;
+  font-weight: 700;
+  color: #bbb;
+  white-space: nowrap;
+  letter-spacing: 1px;
+}
+
+/* =========================================================
+   MAIN CONTENT AREA
+========================================================= */
+
+.admin-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.admin-loading,
+.admin-empty {
+  padding: 80px 28px;
+  font-family: "DM Mono", monospace;
+  font-size: 12px;
+  color: #bbb;
+  text-align: center;
+}
+
+.admin-table-wrap {
+  overflow: auto;
+  padding-bottom: 40px;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: #fff;
+}
+
+.admin-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.admin-table th {
+  background: #fafaf7;
+  border-bottom: 2px solid #e8e5de;
+  padding: 12px 18px;
+  text-align: left;
+  font-family: "DM Mono", monospace;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #aaa;
+  white-space: nowrap;
+}
+
+.admin-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s;
+}
+
+.admin-table th.sortable:hover,
+.admin-table th.sorted {
+  color: #111;
+}
+
+.admin-table td {
+  padding: 14px 18px;
+  border-bottom: 1px solid #f0ede6;
+  color: #444;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.admin-table td strong {
+  color: #111;
+  font-weight: 600;
+}
+
+.admin-table td.mono {
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+  color: #aaa;
+}
+
+.admin-table tbody tr {
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.admin-table tbody tr:hover {
+  background: #faf8f3;
+}
+
+.admin-table tbody tr.active-row {
+  background: #fffff0;
+  border-left: 3px solid #111;
+}
+
+.btn-view {
+  height: 28px;
+  padding: 0 10px;
+  background: #111;
+  border: none;
+  color: #fff;
+  font-family: "DM Mono", monospace;
+  font-size: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-right: 6px;
+  letter-spacing: 0.5px;
+  transition: background 0.15s;
+}
+
+.btn-view:hover {
+  background: #333;
+}
+
+.btn-del-sm {
+  height: 28px;
+  width: 28px;
+  background: transparent;
+  border: 1px solid #ddd;
+  color: #ccc;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-del-sm:hover {
+  border-color: #e53935;
+  color: #e53935;
+  background: #fff5f5;
+}
+
+/* =========================================================
+   CENTERED MODAL
+========================================================= */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 17, 17, 0.45);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.modal-box {
+  width: min(620px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #ffffff;
+  border: 3px solid #111;
+  box-shadow: 10px 10px 0 #111;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* MODAL HEADER */
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 28px;
+  border-bottom: 2px solid #f0ede6;
+  background: #fafaf7;
+}
+
+.modal-avatar {
+  width: 50px;
+  height: 50px;
+  background: #111;
+  color: #c8ff00;
+  font-family: "DM Mono", monospace;
+  font-size: 20px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border: 2px solid #111;
+}
+
+.modal-title-block {
+  flex: 1;
+}
+
+.modal-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -0.5px;
+}
+
+.modal-sub {
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+  color: #888;
+  margin-top: 4px;
+}
+
+.modal-close {
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: 2px solid #e0ddd6;
+  color: #aaa;
+  font-size: 14px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.modal-close:hover {
+  border-color: #111;
+  color: #111;
+  background: #f5f3ee;
+}
+
+/* INFO ROW */
+.modal-info-row {
+  display: flex;
+  border-bottom: 2px solid #f0ede6;
+}
+
+.info-chip {
+  flex: 1;
+  padding: 16px 22px;
+  border-right: 2px solid #f0ede6;
+}
+
+.info-chip:last-child {
+  border-right: none;
+}
+
+.info-chip-label {
+  font-family: "DM Mono", monospace;
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #bbb;
+  margin-bottom: 5px;
+}
+
+.info-chip-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111;
+}
+
+/* SKILL SECTION */
+.modal-section {
+  padding: 18px 28px;
+  border-bottom: 2px solid #f0ede6;
+}
+
+.modal-section-label {
+  font-family: "DM Mono", monospace;
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #bbb;
+  margin-bottom: 8px;
+}
+
+.modal-skill-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111;
+}
+
+/* TAG BLOCKS */
+.tag-block {
+  padding: 16px 28px;
+  border-bottom: 2px solid #f0ede6;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detail-label {
+  font-family: "DM Mono", monospace;
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #bbb;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.tag {
+  font-family: "DM Mono", monospace;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 5px 10px;
+  letter-spacing: 0.3px;
+  border: 2px solid #111 !important;
+  color: #111 !important;
+}
+
+.tag-empty {
+  font-family: "DM Mono", monospace;
+  font-size: 9px;
+  color: #ccc;
+}
+
+/* MODAL FOOTER */
+.modal-footer {
+  padding: 20px 28px;
+  background: #fafaf7;
+}
+
+.btn-delete {
+  width: 100%;
+  padding: 13px;
+  background: transparent;
+  border: 2px solid #e53935;
+  color: #e53935;
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.btn-delete:hover {
+  background: #e53935;
+  color: #fff;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media screen and (max-width: 768px) {
+  .admin-stats {
+    flex-wrap: wrap;
+  }
+  .stat-card {
+    min-width: 33%;
+    border-bottom: 2px solid #e8e5de;
+  }
+  .modal-info-row {
+    flex-direction: column;
+  }
+  .info-chip {
+    border-right: none;
+    border-bottom: 2px solid #f0ede6;
+  }
+  .admin-topbar {
+    padding: 0 14px;
+    height: auto;
+    min-height: 56px;
+    flex-wrap: wrap;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    gap: 8px;
+  }
+  .admin-topbar-right {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .admin-search-bar {
+    padding: 12px 14px;
+  }
+  .admin-table td,
+  .admin-table th {
+    padding: 10px 10px;
+  }
+  .modal-box {
+    max-height: 95vh;
+  }
+}

@@ -2491,3 +2491,28 @@ button {
     font-size: 6px;
   }
 }
+
+/* =========================================================
+   ADMIN LINK (footer)
+========================================================= */
+
+.admin-link {
+  margin-left: 10px;
+  background: transparent;
+  border: 1px solid #555;
+  color: #555;
+  font-family: "DM Mono", monospace;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 3px 7px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  vertical-align: middle;
+}
+
+.admin-link:hover {
+  border-color: #c8ff00;
+  color: #111;
+  background: #c8ff00;
+}

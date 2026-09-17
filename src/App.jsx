@@ -1,11 +1,15 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion"; /// 
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
+import { collection, addDoc, serverTimestamp, query, where, getDocs } from "firebase/firestore";
+import { db } from "./firebase";
 import "./App.css";
 
-function App() {
+function App({ onAdminAccess }) {
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState(1);
+  const [submitting, setSubmitting] = useState(false);
+  const [alreadySubmitted, setAlreadySubmitted] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -26,10 +30,63 @@ function App() {
     }));
   };
 
-  const navigateTo = (nextPage) => {
+  const navigateTo = (nextPage, duplicate = false) => {
     setDirection(nextPage >= page ? 1 : -1);
+    if (duplicate !== undefined) setAlreadySubmitted(duplicate);
     setPage(nextPage);
   };
+
+  // Submit form data to Firestore
+  async function submitToFirestore() {
+    setSubmitting(true);
+    try {
+      // ── Check duplicate by phone OR email ────────────────────────────────
+      const phoneQuery = query(
+        collection(db, "responses"),
+        where("phone", "==", formData.phone)
+      );
+      const emailQuery = query(
+        collection(db, "responses"),
+        where("email", "==", formData.email)
+      );
+
+      const [phoneSnap, emailSnap] = await Promise.all([
+        getDocs(phoneQuery),
+        getDocs(emailQuery),
+      ]);
+
+      if (!phoneSnap.empty || !emailSnap.empty) {
+        // Already submitted — go to final page with alreadySubmitted flag
+        navigateTo(8, true);
+        return;
+      }
+
+      // ── Save to Firestore ─────────────────────────────────────────────────
+      const docRef = await addDoc(collection(db, "responses"), {
+        name: formData.name,
+        year: formData.year,
+        semester: formData.semester,
+        interests: formData.interests,
+        skillLevel: formData.skillLevel,
+        activities: formData.activities,
+        contributions: formData.contributions,
+        phone: formData.phone,
+        email: formData.email,
+        submittedAt: serverTimestamp(),
+      });
+      console.log("✅ Saved to Firestore with ID:", docRef.id);
+      navigateTo(8, false);
+    } catch (err) {
+      console.error("❌ Firestore error:", err.code, err.message);
+      if (err.code === "permission-denied") {
+        alert("Permission denied. Please update Firestore Rules in Firebase Console.");
+      } else {
+        alert("Submit failed: " + err.message);
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <div className="app" style={{ overflowX: "hidden" }}>
@@ -40,6 +97,7 @@ function App() {
           <LandingPage
             key="landing"
             onStart={() => navigateTo(1)}
+            onAdminAccess={onAdminAccess}
           />
         )}
 
@@ -109,7 +167,8 @@ function App() {
     key="contact"
     data={formData}
     updateData={updateData}
-    onNext={() => navigateTo(8)}
+    onNext={submitToFirestore}
+    submitting={submitting}
     onBack={() => navigateTo(6)}
   />
 )}
@@ -117,6 +176,7 @@ function App() {
   <FinalPage
     key="final"
     data={formData}
+    alreadySubmitted={alreadySubmitted}
     onRestart={() => navigateTo(0)}
   />
 )}
@@ -131,7 +191,7 @@ function App() {
    LANDING
 ========================================================= */
 
-function LandingPage({ onStart }) {
+function LandingPage({ onStart, onAdminAccess }) {
   return (
     <motion.main
       className="landing"
@@ -273,7 +333,17 @@ function LandingPage({ onStart }) {
           LEARN × BUILD × EXPERIMENT × GROW
         </div>
 
-        <span>BCA / 2026</span>
+        <span>
+          BCA / 2026
+          {onAdminAccess && (
+            <button
+              className="admin-link"
+              onClick={onAdminAccess}
+            >
+              ADMIN
+            </button>
+          )}
+        </span>
 
       </footer>
 
@@ -1245,6 +1315,7 @@ function ContactPage({
   updateData,
   onNext,
   onBack,
+  submitting,
 }) {
   const phoneValid =
     /^[0-9]{10}$/.test(data.phone);
@@ -1406,10 +1477,10 @@ function ContactPage({
 
           <motion.button
             className="submit-button"
-            disabled={!canContinue}
+            disabled={!canContinue || submitting}
             onClick={onNext}
             whileHover={
-              canContinue
+              canContinue && !submitting
                 ? {
                     y: -4,
                     x: 2,
@@ -1417,7 +1488,7 @@ function ContactPage({
                 : {}
             }
             whileTap={
-              canContinue
+              canContinue && !submitting
                 ? {
                     y: 3,
                     x: 3,
@@ -1427,10 +1498,10 @@ function ContactPage({
           >
 
             <span>
-              FINISH
+              {submitting ? "SUBMITTING..." : "FINISH"}
             </span>
 
-            <ArrowRight size={23} />
+            {!submitting && <ArrowRight size={23} />}
 
           </motion.button>
 
@@ -1463,7 +1534,7 @@ function ContactPage({
    FINAL PAGE — YOU'RE IN
 ========================================================= */
 
-function FinalPage({ data, onRestart }) {
+function FinalPage({ data, onRestart, alreadySubmitted }) {
   return (
     <motion.main
       className="final-page"
@@ -1529,25 +1600,11 @@ function FinalPage({ data, onRestart }) {
 
         <motion.div
           className="final-word in"
-          initial={{
-            opacity: 0,
-            y: -220,
-            rotate: 5,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-            rotate: 0,
-          }}
-          transition={{
-            delay: 0.48,
-            duration: 0.85,
-            type: "spring",
-            stiffness: 85,
-            damping: 11,
-          }}
+          initial={{ opacity: 0, y: -220, rotate: 5 }}
+          animate={{ opacity: 1, y: 0, rotate: 0 }}
+          transition={{ delay: 0.48, duration: 0.85, type: "spring", stiffness: 85, damping: 11 }}
         >
-          IN.
+          {alreadySubmitted ? "ALREADY" : "IN."}
         </motion.div>
 
 
@@ -1555,36 +1612,23 @@ function FinalPage({ data, onRestart }) {
 
         <motion.div
           className="final-confirmation"
-          initial={{
-            opacity: 0,
-            y: -80,
-            scale: 0.7,
-            rotate: -8,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            rotate: 2,
-          }}
-          transition={{
-            delay: 0.9,
-            duration: 0.7,
-            type: "spring",
-            stiffness: 120,
-          }}
+          initial={{ opacity: 0, y: -80, scale: 0.7, rotate: -8 }}
+          animate={{ opacity: 1, y: 0, scale: 1, rotate: 2 }}
+          transition={{ delay: 0.9, duration: 0.7, type: "spring", stiffness: 120 }}
         >
           <span className="final-check">
-            ✓
+            {alreadySubmitted ? "!" : "✓"}
           </span>
 
           <div>
             <strong>
-              RESPONSE RECEIVED
+              {alreadySubmitted ? "ALREADY REGISTERED" : "RESPONSE RECEIVED"}
             </strong>
 
             <small>
-              THANKS, {data.name.toUpperCase()}
+              {alreadySubmitted
+                ? `HEY ${data.name.toUpperCase()}, YOU'RE ALREADY IN!`
+                : `THANKS, ${data.name.toUpperCase()}`}
             </small>
           </div>
         </motion.div>
@@ -1594,22 +1638,23 @@ function FinalPage({ data, onRestart }) {
 
         <motion.p
           className="final-message"
-          initial={{
-            opacity: 0,
-            y: 30,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            delay: 1.2,
-            duration: 0.5,
-          }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.2, duration: 0.5 }}
         >
-          Something interesting is being built.
-          <br />
-          And you're now part of it.
+          {alreadySubmitted ? (
+            <>
+              Your details are already with us.
+              <br />
+              No need to submit again — you're part of it.
+            </>
+          ) : (
+            <>
+              Something interesting is being built.
+              <br />
+              And you're now part of it.
+            </>
+          )}
         </motion.p>
 
 
