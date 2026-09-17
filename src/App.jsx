@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion"; /// 
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
-import { collection, addDoc, serverTimestamp, query, where, getDocs } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "./firebase";
 import "./App.css";
 
@@ -40,29 +40,17 @@ function App({ onAdminAccess }) {
   async function submitToFirestore() {
     setSubmitting(true);
     try {
-      // ── Check duplicate by phone OR email ────────────────────────────────
-      const phoneQuery = query(
-        collection(db, "responses"),
-        where("phone", "==", formData.phone)
-      );
-      const emailQuery = query(
-        collection(db, "responses"),
-        where("email", "==", formData.email)
-      );
+      // Use phone as document ID — prevents duplicate submissions
+      const docRef = doc(db, "responses", formData.phone);
+      const existing = await getDoc(docRef);
 
-      const [phoneSnap, emailSnap] = await Promise.all([
-        getDocs(phoneQuery),
-        getDocs(emailQuery),
-      ]);
-
-      if (!phoneSnap.empty || !emailSnap.empty) {
-        // Already submitted — go to final page with alreadySubmitted flag
+      if (existing.exists()) {
+        // Already submitted
         navigateTo(8, true);
         return;
       }
 
-      // ── Save to Firestore ─────────────────────────────────────────────────
-      const docRef = await addDoc(collection(db, "responses"), {
+      await setDoc(docRef, {
         name: formData.name,
         year: formData.year,
         semester: formData.semester,
@@ -74,15 +62,12 @@ function App({ onAdminAccess }) {
         email: formData.email,
         submittedAt: serverTimestamp(),
       });
-      console.log("✅ Saved to Firestore with ID:", docRef.id);
+
+      console.log("✅ Saved to Firestore");
       navigateTo(8, false);
     } catch (err) {
       console.error("❌ Firestore error:", err.code, err.message);
-      if (err.code === "permission-denied") {
-        alert("Permission denied. Please update Firestore Rules in Firebase Console.");
-      } else {
-        alert("Submit failed: " + err.message);
-      }
+      alert("Submit failed: " + err.message);
     } finally {
       setSubmitting(false);
     }
