@@ -1,15 +1,11 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import "./App.css";
-
-const GOOGLE_FORM_URL =
-  "https://docs.google.com/forms/d/e/1FAIpQLSfYYsSm2S6gLpJcCu7wLoEdpgAftxt9DfxWnVPmqYNt9bdlkA/formResponse";
 
 function App() {
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState(1);
-  const googleFormRef = useRef(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -35,74 +31,8 @@ function App() {
     setPage(nextPage);
   };
 
-  const submitToGoogleForm = () => {
-    console.debug("Submitting Google Form:", formData);
-    googleFormRef.current.submit();
-    navigateTo(8);
-  };
-
   return (
     <div className="app" style={{ overflowX: "hidden" }}>
-      <form
-        ref={googleFormRef}
-        action={GOOGLE_FORM_URL}
-        method="POST"
-        target="google-form-hidden-frame"
-        style={{ display: "none" }}
-      >
-        <input name="entry.590781361" value={formData.name} readOnly />
-        <input name="entry.392658492" value={formData.year} readOnly />
-        <input
-          name="entry.2041580082"
-          value={formData.semester}
-          readOnly
-        />
-        {formData.interests.map((item) => (
-          <input
-            key={`interest-${item}`}
-            name="entry.1472901316"
-            value={item}
-            readOnly
-          />
-        ))}
-        <input
-          name="entry.1200873607"
-          value={formData.skillLevel}
-          readOnly
-        />
-        {formData.activities.map((item) => (
-          <input
-            key={`activity-${item}`}
-            name="entry.289437916"
-            value={item}
-            readOnly
-          />
-        ))}
-        {formData.contributions.map((item) => (
-          <input
-            key={`contribution-${item}`}
-            name="entry.901751509"
-            value={item}
-            readOnly
-          />
-        ))}
-        <input name="entry.1020062477" value={formData.phone} readOnly />
-        <input name="entry.841494470" value={formData.email} readOnly />
-        <input name="entry.392658492_sentinel" value="" readOnly />
-        <input name="entry.2041580082_sentinel" value="" readOnly />
-        <input name="entry.1472901316_sentinel" value="" readOnly />
-        <input name="entry.1200873607_sentinel" value="" readOnly />
-        <input name="entry.289437916_sentinel" value="" readOnly />
-        <input name="entry.901751509_sentinel" value="" readOnly />
-        <input name="fvv" value="1" readOnly />
-        <input name="pageHistory" value="0" readOnly />
-        <input name="submissionTimestamp" value="-1" readOnly />
-      </form>
-      <iframe
-        name="google-form-hidden-frame"
-        title="Google Forms submission"
-        style={{ display: "none" }}
-      />
       <AnimatePresence mode="wait" custom={direction}>
 
         {/* LANDING PAGE */}
@@ -179,7 +109,7 @@ function App() {
     key="contact"
     data={formData}
     updateData={updateData}
-    onNext={submitToGoogleForm}
+    onNext={() => navigateTo(8)}
     onBack={() => navigateTo(6)}
   />
 )}
